@@ -1,54 +1,19 @@
-import exp from 'constants';
-import { atom, selector } from 'recoil';
-import { recoilPersist } from 'recoil-persist';
+import { atom } from 'recoil';
 
-const { persistAtom } = recoilPersist();
-
-export enum Categories {
-  'TO_DO' = 'TO_DO',
-  'DOING' = 'DOING',
-  'DONE' = 'DONE',
-}
-
-export const categoryState = atom<Categories>({
-  key: 'category',
-  default: Categories.TO_DO,
-});
-
-export interface IToDo {
+export interface ITodo {
+  id: number;
   text: string;
-  id: number;
-  category: string;
 }
 
-export const toDoState = atom<IToDo[]>({
+interface IToDoState {
+  [key: string]: ITodo[];
+}
+
+export const toDoState = atom<IToDoState>({
   key: 'toDo',
-  default: [],
-  effects_UNSTABLE: [persistAtom],
-});
-
-export interface ICategories {
-  name: string;
-  id: number;
-}
-
-export const categorySa = atom<ICategories[]>({
-  key: 'addcategory',
-  default: [
-    { name: 'TO_DO', id: 1 },
-    { name: 'DOING', id: 2 },
-    { name: 'DONE', id: 3 },
-  ],
-  effects_UNSTABLE: [persistAtom],
-});
-
-export const toDoSelector = selector({
-  key: 'toDoSelector',
-  get: ({ get }) => {
-    const toDos = get(toDoState);
-    const category = get(categoryState);
-    return toDos.filter(
-      (toDo) => toDo.category === category
-    );
+  default: {
+    'To Do': [],
+    Doing: [],
+    Done: [],
   },
 });
